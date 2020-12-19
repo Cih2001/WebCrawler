@@ -21,13 +21,16 @@ type LinkInfo struct {
 
 // getFullPath converts an internal link to an external one.
 func (v *Validator) getFullPath(link string) string {
+	link = strings.ReplaceAll(link, " ", "")
 	if strings.HasPrefix(link, "http://") || strings.HasPrefix(link, "https://") {
 		// it is alread a full path
 		return link
 	}
 
 	if linkURL, err := url.Parse(link); err == nil {
-		return v.BaseURL.ResolveReference(linkURL).String()
+		result := v.BaseURL.ResolveReference(linkURL).String()
+		result = strings.ReplaceAll(result, " ", "") // just trimming
+		return result
 	}
 
 	return ""
@@ -38,11 +41,14 @@ func (v *Validator) isBrokenLink(url string) bool {
 	fullPath := v.getFullPath(url)
 	resp, err := http.Get(fullPath)
 	if err != nil {
+		// fmt.Println(fullPath, err.Error())
 		return true
 	}
 
 	// usually, an status code of 400 or above means a broken link
+	// this is not accurate though.
 	if resp.StatusCode >= 400 {
+		// fmt.Println(fullPath, resp.StatusCode)
 		return true
 	}
 

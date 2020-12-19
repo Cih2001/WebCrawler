@@ -104,7 +104,7 @@ func (rr *ReportResponse) examineLinks(links []string) {
 		go getConcurrentLinkInfo(&wg, l) // isn't it of divine intellect?
 	}
 
-	wg.Wait() // for all linked to be resolved.
+	wg.Wait() // for all links to be resolved.
 
 	rr.BrokenLinks = brokenLinksCount
 	rr.ExternalLinks = externalLinksCount
