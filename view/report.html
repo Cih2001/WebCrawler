@@ -1,0 +1,55 @@
+<html>
+  <body>
+    <h1> Report for {{.Address}} </h1>
+    <h2> Summary </h2>
+    <table>
+      <tr>
+        <td> Page title: </td>
+        <td> {{.Title}} <td>
+      </tr>
+      <tr>
+        <td> HTML version: </td>
+        <td> {{.Version}} <td>
+      </tr>
+      <tr>
+        <td> Number of internal links: </td>
+        <td> {{.InternalLinks}} <td>
+      </tr>
+      <tr>
+        <td> Number of external links: </td>
+        <td> {{.ExternalLinks}} <td>
+      </tr>
+      <tr>
+        <td> Number of total links: </td>
+        <td> {{.TotalLinks}} <td>
+      </tr>
+      <tr>
+        <td> Number of broken links: </td>
+        <td> {{.BrokenLinks}} <td>
+      </tr>
+      <tr>
+        <td> Contains Login form: </td>
+        <td> {{.LoginForm}} <td>
+      </tr>
+    </table>
+
+    <h2> Additional data </h2>
+    <h3> Links </h3>
+    <table>
+      <tr>
+        <th> IsExternal </th>
+        <th> IsBroken </th>
+        <th> URL </th>
+        <th> Link </th>
+      </tr>
+      {{range .Links}} 
+      <tr>
+        <td> {{.IsExternal}} </td>
+        <td> {{.IsBroken}} </td>
+        <td> {{.URL}} </td>
+        <td> <a href={{.FullPath}}> {{.FullPath}} </a> </td>
+      </tr>
+      {{end}}
+    </table>
+  </body>
+</html>
