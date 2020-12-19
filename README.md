@@ -14,6 +14,13 @@ Webcrawler returns information about
 * Number of broken links
 * Existance of a Login form in the page
 
+## Running WebCrawler
+Install the latest version of Golang. Clone the project. Change directory into the it and execute following bash command.
+```bash
+GO111MODULE=on;go run main.go :1323
+```
+
+After running above command, WebCrawler will be accessible on localhost:1323 in your browser.
 ## Project assumptions:
 
 ### Redirections
