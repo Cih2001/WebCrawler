@@ -2,36 +2,60 @@
   <body>
     <h1> Report for {{.Address}} </h1>
     <h2> Summary </h2>
-    <table>
-      <tr>
-        <td> Page title: </td>
-        <td> {{.Title}} <td>
-      </tr>
-      <tr>
-        <td> HTML version: </td>
-        <td> {{.Version}} <td>
-      </tr>
-      <tr>
-        <td> Number of internal links: </td>
-        <td> {{.InternalLinks}} <td>
-      </tr>
-      <tr>
-        <td> Number of external links: </td>
-        <td> {{.ExternalLinks}} <td>
-      </tr>
-      <tr>
-        <td> Number of total links: </td>
-        <td> {{.TotalLinks}} <td>
-      </tr>
-      <tr>
-        <td> Number of broken links: </td>
-        <td> {{.BrokenLinks}} <td>
-      </tr>
-      <tr>
-        <td> Contains Login form: </td>
-        <td> {{.LoginForm}} <td>
-      </tr>
-    </table>
+    <div>
+      <table>
+        <tr>
+          <td> Page title: </td>
+          <td> {{.Title}} </td>
+        </tr>
+        <tr>
+          <td> HTML version: </td>
+          <td> {{.Version}} </td>
+        </tr>
+        <tr>
+          <td> Contains Login form: </td>
+          <td> {{.LoginForm}} </td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <table>
+        <tr>
+          <th>Links</th>
+          <th>External</th>
+          <th>Internal</th>
+          <th>Broken</th>
+          <th>Total</th>
+        </tr>
+        <tr>
+          <td>Number of links:</td>
+          <td>{{.ExternalLinks}}</td>
+          <td>{{.InternalLinks}}</td>
+          <td>{{.BrokenLinks}}</td>
+          <td>{{.TotalLinks}}</td>
+        </tr>
+      </table>
+    </div>
+    <div></div>
+    <div>
+      <table>
+        <tr>
+          <th>Headings</th>
+          <th>Level 1</th>
+          <th>Level 2</th>
+          <th>Level 3</th>
+          <th>Level 4</th>
+          <th>Level 5</th>
+          <th>Level 6</th>
+        </tr>
+        <tr>
+          <td>Number of headings:</td>
+          {{range .Headings}} 
+          <td>{{.}}</td>
+          {{end}} 
+        </tr>
+      </table>
+    </div>
 
     <h2> Additional data </h2>
     <h3> Links </h3>
@@ -40,14 +64,12 @@
         <th> IsExternal </th>
         <th> IsBroken </th>
         <th> URL </th>
-        <th> Full path </th>
       </tr>
       {{range .Links}} 
       <tr>
         <td> {{.IsExternal}} </td>
         <td> {{.IsBroken}} </td>
-        <td> {{.URL}} </td>
-        <td> <a href={{.FullPath}}> {{.FullPath}} </a> </td>
+        <td> <a href={{.FullPath}}> {{.URL}} </a> </td>
       </tr>
       {{end}}
     </table>

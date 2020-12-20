@@ -17,6 +17,7 @@ type ReportResponse struct {
 	Address       string
 	Title         string
 	Version       string
+	Headings      [6]int
 	InternalLinks int
 	ExternalLinks int
 	TotalLinks    int
@@ -96,6 +97,7 @@ func (rr *ReportResponse) examineLinks(links []string) {
 		if linkInfo.IsExternal {
 			externalLinksCount++
 		}
+
 		rr.Links = append(rr.Links, linkInfo)
 	}
 
@@ -109,7 +111,7 @@ func (rr *ReportResponse) examineLinks(links []string) {
 	rr.BrokenLinks = brokenLinksCount
 	rr.ExternalLinks = externalLinksCount
 	rr.TotalLinks = len(rr.Links)
-	rr.InternalLinks = rr.TotalLinks - rr.InternalLinks
+	rr.InternalLinks = rr.TotalLinks - rr.ExternalLinks
 }
 
 // prepareReport gets a response to a http request and makes a report based on that.
@@ -149,6 +151,24 @@ func (rr *ReportResponse) prepareReport(body io.ReadCloser) error {
 			}
 		}
 
+		// count headings.
+		if n.Type == html.ElementNode {
+			switch n.Data {
+			case "h1":
+				rr.Headings[0]++
+			case "h2":
+				rr.Headings[1]++
+			case "h3":
+				rr.Headings[2]++
+			case "h4":
+				rr.Headings[3]++
+			case "h5":
+				rr.Headings[4]++
+			case "h6":
+				rr.Headings[5]++
+			}
+		}
+
 		// check for login form
 		if n.Type == html.ElementNode && n.Data == "form" {
 			if !hasLoginForm {
@@ -157,9 +177,9 @@ func (rr *ReportResponse) prepareReport(body io.ReadCloser) error {
 
 			// we probably do not need to parse the children of a form.
 			// IsLoginForm does that for us. so it would make more sence to return here.
-			// however, as it does not have a huge impact on performance, (forms are literraly
+			// however, as it does not have a huge impact on performance, (forms are literally
 			// small in size) we do not return here just to be safe. (for example catching
-			// any potential link in the forms (relative links might be probable)
+			// any potential link in the forms (relative links might be probable).
 		}
 
 		// parse other nodes
@@ -189,21 +209,22 @@ func ReportHandler(c echo.Context) error {
 	}
 
 	responseData := ReportResponse{
-		Address: resp.Request.URL.String(),
-		Version: "4 or earlier", // Default html version
+		Address:  resp.Request.URL.String(),
+		Version:  "4 or earlier", // Default html version
+		Headings: [6]int{0, 0, 0, 0, 0, 0},
 	}
 
-	// initialize default link validator
+	// initialize default link validator.
 	defaultLinkValidator = &linkvalidator.Validator{
 		BaseURL: resp.Request.URL,
 	}
 
-	// prepare report
+	// prepare report.
 	err = responseData.prepareReport(resp.Body)
 	if err != nil {
 		return c.HTML(http.StatusInternalServerError, "Error: "+err.Error())
 	}
 
-	// load report template
+	// render report template
 	return c.Render(http.StatusOK, "report.html", responseData)
 }
